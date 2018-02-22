@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Merriweather+Sans|Signika|Material+Icons|Raleway:100');
+.transfer_request {
+    padding: 9px;
+    border: 1px dashed #9C9C9C;
+    margin-bottom: 1px;
+}
+.btn_remove_request {
+    color: red;
+    /*margin-left: 5px;*/
+}
+
+.modal-body{
+    height: calc(100vh - 212px);
+    overflow-y: auto;
+}
+
+.msg_completed, .msg_aborted {
+    text-align: center;
+}

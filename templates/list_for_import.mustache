@@ -1,0 +1,349 @@
+
+<div class="row col-xs-12">
+
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="navigation">
+                <a class="nav-link {{^active_histo}}active{{/active_histo}}" href="#courses" role="tab" data-toggle="tab" id="tab_courses">{{#str}}transfer_request, local_uca_transfer_courses{{/str}}</a>
+            </li>
+            <li class="nav-item" role="navigation">
+                <a class="nav-link {{#active_histo}}active{{/active_histo}}" href="#histo" role="tab" data-toggle="tab" id="tab_histo">{{#str}}transfer_histo, local_uca_transfer_courses{{/str}}</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane {{^active_histo}}active{{/active_histo}}" id="courses">
+            <input type="hidden" value="{{ json_courses }}" id="json_courses" data-transferred-courses="{{{transferred}}}">
+
+            <div class="col-xs-6">
+                <fieldset>
+                    <legend>{{#str}}transfer_list, local_uca_transfer_courses{{/str}}</legend>
+                    <button class="btn btn-primary pull-right" id="start_transfer">{{#str}}transfer, local_uca_transfer_courses{{/str}}</button>
+                    <div id="jstree_courses" class="col-xs-11 jstree" rel="json_courses"></div>
+                </fieldset>
+            </div>
+            <div class="col-xs-6">
+                <fieldset>
+                    <legend>{{#str}}to_transfer, local_uca_transfer_courses{{/str}}</legend>
+                    <div id="requests">
+
+                    </div>
+                    <form action="" method="post" id="courses_form">
+                        <input type="hidden" name="json_requests" />
+                        <input type="submit" id="submit_requests" name="submit_requests" class="btn btn-primary col-xs-6" value="{{#str}}savechanges, moodle{{/str}}" />
+                        <input type="reset" id="reset_requests" name="reset_requests" class="btn btn-default col-xs-6" value="{{#str}}cancel, moodle{{/str}}" />
+                    </form>
+                </fieldset>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane {{#active_histo}}active{{/active_histo}}" id="histo">
+            {{#str}}transfer_requests, local_uca_transfer_courses{{/str}}
+
+            {{^requests}}
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <strong>{{#str}}no_request, local_uca_transfer_courses{{/str}}</strong>
+                </div>
+            {{/requests}}
+            {{#requests}}
+                <table class="table table-striped">
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th>{{#str}}request_date, local_uca_transfer_courses{{/str}}</th>
+                            <th>{{#str}}course, moodle{{/str}}</th>
+                            <th>Catégorie de destination</th>
+                            <th>{{#str}}status, moodle{{/str}}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#courses}}
+                            <tr {{#transfer_end}}class="table-success"{{/transfer_end}}>
+                                    <td>{{request_date}}</td>
+                                    <td>{{course_name}}</td>
+                                    <td>{{target_category_name}}</td>
+                                    <td>
+                                        {{#transfer_end}}
+                                            {{#str}}transfer_complete, local_uca_transfer_courses{{/str}} {{ transfer_end }}
+                                            <td></td>
+                                        {{/transfer_end}}
+                                        {{^transfer_end}}
+                                            {{#transfer_start}}
+                                                {{#str}}transfer_in_progress, local_uca_transfer_courses{{/str}} {{ transfer_start }}
+                                                <td></td>
+                                            {{/transfer_start}}
+                                            {{^transfer_start}}
+                                                {{#str}}pending, mod_lti{{/str}}
+                                                <td><a href="#" class="btn btn-default cancel_request" data-request-id="{{id}}">{{#str}}cancel_transfer, local_uca_transfer_courses{{/str}}</a>
+                                            {{/transfer_start}}
+                                        {{/transfer_end}}
+                                    </td>
+                                </tr>
+                        {{/courses}}
+                    </tbody>
+                </table>
+            {{/requests}}
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="tree_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{#str}}categories, moodle{{/str}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Catégorie où déplacer le cours: <span id="selected_category" style="font-weight: bold"></span>
+                {{#tree}}{{{ tree }}}{{/tree}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}}cancel, moodle{{/str}}</button>
+                <button type="button" class="btn btn-primary" id="valid_modal">{{#str}}savechanges, moodle{{/str}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TEMPLATE DEMANDE TRANSFERT -->
+<div class="selected_cours_template">
+    <div class="row transfer_request" data-course-id="">
+        <div class="col-xs-10 request_text"></div>
+        <div class="col-xs-2">
+            <i class="material-icons pull-right btn_remove_request" title="{{#str}}delete, moodle{{/str}}" style="cursor: pointer;">delete</i>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(
+        function ($)
+        {
+            $(".selected_cours_template").hide();
+            $("#submit_requests").hide();
+            $("#reset_requests").hide();
+            requests = Array(); //tableau des demandes de transfert
+            render = "";
+            /**
+             * Initialisations des jstrees
+             * */
+            $("#jstree_courses").jstree({
+                "core" : {
+                    "data" : jQuery.parseJSON($("#json_courses").val()),
+                    "multiple": true,
+                    "check_callback" : function(operation, node, node_parent, node_position, more) {
+                        return true;  //allow all other operations
+                    },
+                },
+                "types": {
+                    "category": {
+                        "icon" : "{{#uca_url}}/pix/i/withsubcat.png{{/uca_url}}"
+                    },
+                    "course" : {
+                        "icon" : "{{#uca_url}}/pix/i/course.png{{/uca_url}}"
+                    },
+                    "default": {
+                        "icon" : "{{#uca_url}}/pix/i/withsubcat.png{{/uca_url}}"
+                    },
+                },
+                "checkbox": {
+                    "keep_selected_style": false,
+                    "three_state": false,
+                    "cascade": "down"
+                },
+                "plugins": ["checkbox", "types", "show_transferred"],
+            });
+
+            $("#jstree_courses").on("loaded.jstree", function() {
+                $("#jstree_courses").jstree("open_all");
+            });
+            $("#jstree_courses").bind("select_node.jstree", function (e, data) {
+                data.instance.toggle_node(data.node);
+            });
+
+
+            //Affichage de la modal permettant de choisir la catégorie de destination des cours
+            $("#start_transfer").click(function() {
+                selected_courses = Array();
+                var checked = $("#jstree_courses").jstree('get_checked', true);
+                for(var i = 0; i < checked.length; i++) {
+                   if(checked[i].type == "course") {
+                       selected_courses.push(checked[i]);
+                   }
+                }
+                if(selected_courses.length > 0) {
+                    $("#tree_modal").modal('toggle');
+                }
+                else {
+                    alert("Vous devez sélectionner au moins un cours pour pouvoir les transférer!")
+                }
+            });
+
+            //Action lancée au moment du click sur une catégorie
+            $('.course_category_tree').on('click', '.content a',function(e){
+                var link = $(this);
+                link.parent('.info').click();
+                $(".category_selected").each(function(){
+                    $(this).removeClass('category_selected');
+                });
+                link.addClass('category_selected');
+                if(link.html().indexOf(' année') >= 0 || link.html().indexOf('Année unique') >= 0) {
+                    //Si on a cliqué au niveau d'une année, on affichera le nom du diplôme à la suite pour plus de lisibilité
+                    cat_text = link.html() + ", " + link.parents('.category.with_children.loaded').first().children('.info').children('.categoryname').children('a').html();
+                }
+                else {
+                    cat_text = link.html();
+                }
+                $("#selected_category").text(cat_text);
+
+                //On récupère l'id de la categorie pour le mettre dans le champ caché du formulaire
+                catid = link.attr('href').split('=')[1];
+                return false;
+            });
+
+            //Actions lancées quand on valide la catégorie sélectionnée dans la modal
+            $('#valid_modal').click(function() {
+               if(typeof(catid) != 'undefined' && $("#selected_category").text().length > 0) {
+                   $("#tree_modal").modal('hide');
+                   $.each(selected_courses, function() {
+                       //Actions permettant de créer la demande
+                       var node = $(this)[0];
+                       var datas = JSON.parse(node.data);
+                       var exists = false;
+                       $.each(requests, function(index) {
+                           if(datas.course_id == $(this)[0].course_id) {
+                               exists = true;
+                               return false;
+                           }
+                       });
+                       //On ajoute la demande de transfert que si aucune autre demande n'a été fait pour ce cours.
+                       if(!exists) {
+                           render = $("#requests").html();
+                           $(".request_text").text(node.text + " >> " + cat_text);
+                           $(".transfer_request").attr('data-course-id', datas.course_id);
+                           console.log(render);
+                           render += $(".selected_cours_template").html();
+                           $("#requests").html(render);
+                           var request = Object();
+                           request.course_id = datas.course_id;
+                           request.course_name = datas.text;
+                           request.target_category_id = catid;
+                           request.target_category_name = cat_text;
+                           requests.push(request);
+                           $("#submit_requests").show();
+                           $("#reset_requests").show();
+                           $("#jstree_courses").jstree(true).deselect_all();
+                       }
+                   });
+                   $("input[name='json_requests']").val(JSON.stringify(requests));
+               }
+               else {
+                   alert("Veuillez sélectionner une catégorie pour transférer votre/vos cours !");
+               }
+            });
+
+            //Action permettant de supprimer la demande selectionnée
+            $('#requests').on('click','.btn_remove_request',function()
+            {
+                var cours = $(this).parents('.transfer_request').attr('data-course-id');
+                //On supprime le cours du tableau des demandes
+                $.each(requests, function(index) {
+                    if($(this)[0].course_id == cours) {
+                        requests.splice(index, 1);
+                        return false;
+                    }
+                });
+                //On supprime la demande visuellement sur l'écran
+                $(this).parents('.transfer_request').remove();
+                if(requests.length == 0) {
+                    $("#submit_requests").hide();
+                    $("#reset_requests").hide();
+                }
+
+            });
+
+            //On annule les demande de transfert <=> refresh de la page ?
+            $("#reset_requests").click(function() {
+                $(".btn_remove_request").each(function() {
+                    $(this).click();
+                });
+                $("#submit_requests").hide();
+                $("#reset_requests").hide();
+                $('#requests').focus();
+            });
+
+            //Permet d'annuler une demande de transfert qui n'a pas encore été traitée
+            $('.cancel_request').click(function(e) {
+                e.preventDefault();
+                if (confirm('Vraiment annuler cette demande ?')) {
+                    reqid = $(e.target).attr('data-request-id');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{#uca_url}}/local/uca_transfer_courses/ajax.php{{/uca_url}}',
+                        dataType: 'json',
+                        data: {'action': 'cancel_transfert_request','request_id':reqid},
+                        success:function(d)
+                        {
+                            if(d.type == 'success') {
+                                $(e.target).closest('tr').remove();
+                            }
+                        },
+                        error:function(d)
+                        {
+                            console.log('ERROR');
+                        }
+                    });
+
+                }
+            });
+        }
+    );
+
+    /**
+     * Plugin jstree permettant de rajouter sur un node une icone indiquant que le cours a déjà été transféré.
+     * On testera si l'item correspond à un cours (type=course).
+     * @param options
+     * @param parent
+     */
+    $.jstree.plugins.show_transferred = function (options, parent) {
+        this.redraw_node = function(obj, deep, callback, force_draw) {
+            obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
+            if (obj) {
+                var node = this.get_node(jQuery(obj).attr("id"));
+                if(node) {
+                    datas = JSON.parse(node.data);
+                    var transferred = $('#json_courses').attr('data-transferred-courses').split('-');
+                    if(node.type == "course") {
+                        if($.inArray(datas.course_id, transferred) >= 0) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '{{#uca_url}}/local/uca_transfer_courses/ajax.php{{/uca_url}}',
+                                dataType: 'json',
+                                data: {'action': 'get_transfer_asker','request_id':datas.course_id},
+                                success:function(d)
+                                {
+                                    if(d.type == 'success') {
+                                        jQuery(obj).append("<i style='margin-left: 10px; font-size: 16px;' class='material-icons'>done</i> <i><small>Déjà transféré (" + d.msg+ ")</small></i>");
+                                    }
+                                },
+                                error:function(d)
+                                {
+                                    jQuery(obj).append("<i style='margin-left: 10px; font-size: 16px;' class='material-icons'>done</i> <i><small>Déjà transféré</small></i>");
+                                }
+                            });
+
+                        }
+                    }
+                }
+            }
+            return obj;
+        };
+    };
+
+</script>
