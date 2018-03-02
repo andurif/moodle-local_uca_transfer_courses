@@ -20,7 +20,7 @@ Installation
 - En téléchargement:
 > Télécharger le zip depuis <a href="https://github.com/andurif/moodle-local_uca_mycourses/archive/master.zip">https://github.com/andurif/moodle-local_uca_mycourses/archive/master.zip</a>, dézipper l'archive dans le dossier local/ et renommer le si besoin le dossier en "uca_transfer_courses".
   
-2. Déplacer le sous-dossier export/ vers le projet de la plateforme d'où vont être exporté les cours (pas d'emplacements spécifiques mais il faudra spécifier l'url des ces scripts dans l'administration de votre nouvelle plateforme).<br/>
+2. Déplacer le sous-dossier export/ vers le projet de la plateforme d'où vont être exporté les cours (pas d'emplacements spécifiques mais il faudra spécifier l'url des ces scripts dans l'administration de votre nouvelle plateforme). Des chanegements au niveau de l'intégration du fichier config.php seront peut-être à apporter en fonction de là où vous déposerez le dossier (-> ligne require('../../../config.php'); au début des fichiers import.php et export.php).<br/>
 
 3. Aller sur la page de Notifications pour terminer l'installation du plugin.
 
@@ -36,7 +36,7 @@ Option permettant de renseigner l'url à laquelle le script permettant l'export 
 
  > Site administration -> Plugins -> Plugins locaux -> Transfert de cours -> transfer_archives_folder
  
-Option permettant de renseigner le chemin du dossier où sont déposées les archives des cours à transférer (logiquement dans le dossier moodledata de votre ancien moodle). Attention, ce dossier doit être accessible depuis le serveur de la nouvelle plateforme.
+Option permettant de renseigner le chemin du dossier où sont déposées les archives des cours à transférer (logiquement dans le dossier moodledata de votre ancien moodle). Attention, ce dossier doit être accessible depuis le serveur de la nouvelle plateforme. Attention, ce chemin de dossier doit correspondre avec le dossier $folder défini au début du fichier /export/import.php (ligne 18).
 
 5. Pour l'affichage de l'arbre des catégories nous avons été obligé de modifier quelques éléments du code du core de Moodle dans le fichier course/renderer.php. (Point à améliorer car les modifications peuvent être à refaire en cas de mise à jour de Moodle).<br/>
 (Risque d'avoir ce type de message d'erreur sinon "Erreur de programmation détectée. Ceci doit être corrigé par un programmeur : Unknown method called against theme_boost\output\core\course_renderer :: coursecat_tree").

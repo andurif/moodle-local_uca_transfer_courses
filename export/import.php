@@ -17,11 +17,12 @@ $action = is_null($_POST['action']) ? 'export' : $_POST['action'];
 $courseid = $_POST['course'];
 $folder = $CFG->dataroot . '/clfd/transfert/';
 //Il faut simuler que l'admin fasse l'action => si besoin modifier l'affectation de $user->id = 2 par l'id d'un utilisateur étant administrateur du moodle
-$USER->id = 2;
+
 
 if($action == 'export') {
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-
+    $USER->id = 2;
+	
     try {
         $reponse = new stdClass();
         $config_backup = get_config('backup');
@@ -49,10 +50,12 @@ if($action == 'export') {
         $reponse->archive_path = $fileName;
 
         echo json_encode($reponse);
+	$USER->id = null;
         die;
 
     } catch (\Exception $e) {
         echo $e->getMessage();
+	$USER->id = null;
         die;
     }
 }
