@@ -71,3 +71,4 @@ foreach($requests as $request)
     $options = array('archive_path' => $datas->archive_path, 'action' => 'delete');
     $client->post(get_config('local_uca_transfer_courses', 'course_export_url'), ['form_params' => $options]);
 }
+$user->id = null;
