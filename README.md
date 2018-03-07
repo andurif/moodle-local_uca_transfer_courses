@@ -46,7 +46,7 @@ Option permettant de renseigner le chemin du dossier où sont déposées les arc
     Si besoin on peut aussi déclarer $CFG->courseperpage = null dans le fichier de config mais cela agira de manière globale sur le moodle (les liens "voir plus" et "voir moins" pour les catégories de cours ne seront du coup plus visibles).<br/><br/>
     <i>* les numéros de lignes indiqués pour les changements sont variables en fonction de la version utilisée.</i>
     
-- L'option d'administration Site administration -> Cours -> Sauvegardes -> Sauvegarde automatique -> backup_auto_destination doit être renseignée (même si la sauvegarde automatique n'est pas activée, on se sert de ce dossier pour dézipper l'archive du cours) !
+- L'option d'administration Site administration -> Cours -> Sauvegardes -> Sauvegarde automatique -> backup_auto_destination doit être renseignée (même si la sauvegarde automatique n'est pas activée, on se sert de ce dossier pour dézipper l'archive du cours) ! Ce dossier devant correspondre avec celui défini pour l'option d'administration transfer_archives_folder (cf. point 4.).
 - Utilisation de l'option d'administration Site administration -> Utilisateurs -> Permissions -> Règles utilisateurs -> creatornewroleid. Il est conseillé que le rôle choisi ait des droits de gestion sur le course car c'est par défaut le rôle donné au demandeur du transfert.
 - Attention: si des activités ont été ajoutées manuellement sur l'ancienne plateforme, celles-ci doivent aussi être présentes sur votre nouvelle plateforme pour que le transfert de cours soit complet.
 
