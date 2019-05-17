@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2018020801;
+$plugin->version   = 2019051700;
 $plugin->requires  = 2017051500;
 $plugin->cron      = 0;
 $plugin->component = 'local_uca_transfer_courses';
