@@ -18,7 +18,7 @@ Installation
 > git clone https://github.com/andurif/moodle-local_uca_transfer_courses.git local/uca_transfer_courses
 
 - En téléchargement:
-> Télécharger le zip depuis <a href="https://github.com/andurif/moodle-local_uca_mycourses/archive/master.zip">https://github.com/andurif/moodle-local_uca_mycourses/archive/master.zip</a>, dézipper l'archive dans le dossier local/ et renommer le si besoin le dossier en "uca_transfer_courses".
+> Télécharger le zip depuis <a href="https://github.com/andurif/moodle-local_uca_transfer_courses/archive/master.zip">https://github.com/andurif/moodle-local_uca_transfer_courses/archive/master.zip</a>, dézipper l'archive dans le dossier local/ et renommer le si besoin le dossier en "uca_transfer_courses".
   
 2. Déplacer le sous-dossier export/ vers le projet de la plateforme d'où vont être exporté les cours (pas d'emplacements spécifiques mais il faudra spécifier l'url des ces scripts dans l'administration de votre nouvelle plateforme). Des chanegements au niveau de l'intégration du fichier config.php seront peut-être à apporter en fonction de là où vous déposerez le dossier (-> ligne require('../../../config.php'); au début des fichiers import.php et export.php).<br/>
 
