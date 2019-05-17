@@ -1,4 +1,27 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * CLI script which start the course transfer.
+ *
+ * @package    local_uca_transfer_courses
+ * @author     Université Clermont Auvergne - Pierre Raynaud, Anthony Durif
+ * @copyright  2018 Université Clermont Auvergne
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 define('CLI_SCRIPT', true);
 
@@ -13,12 +36,11 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
 $client = new GuzzleHttp\Client();
 $requests = $DB->get_records('course_transfer_request', array('transfer_start' => null), '', '*', 0, 1);
-//var_dump($requests); die;
-foreach($requests as $request)
-{
+
+foreach($requests as $request) {
     $options = array('course' => $request->course_id);
     $request->transfer_start = date('Y-m-d H:i:s');
-    $DB->update_record('course_transfer_request', $request);
+//    $DB->update_record('course_transfer_request', $request);
     $response = $client->post(get_config('local_uca_transfer_courses', 'course_export_url'), ['form_params' => $options]);
     $datas = json_decode($response->getBody()->getContents());
     $config = get_config('backup');
@@ -54,8 +76,7 @@ foreach($requests as $request)
         //Si besoin modifier en mettant directement l'id du role voulu.
         $enrol_plugin->enrol_user($enrolid, $user->id, $CFG->creatornewroleid);
         $user->id = 2;
-    }
-    else {
+    } else {
         $user->id = 2;
     }
 

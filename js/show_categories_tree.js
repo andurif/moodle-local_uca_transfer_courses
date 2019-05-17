@@ -10,11 +10,11 @@ $(document).ready(
         $('.course_category_tree').on('click', '.content a',function(e){
             var link = $(this);
             link.parent().click();
-            $(".category_selected").each(function(){
-                $(this).removeClass('category_selected');
+            $(".bold").each(function(){
+                $(this).removeClass('bold');
 
             });
-            link.addClass('category_selected');
+            link.addClass('bold');
             if(link.html().indexOf(' année') >= 0 || link.html().indexOf('Année unique') >= 0) {
                 //Si on cliqué au niveau d'une année, on affichera le nom du diplôme à la suite pour plus de lisibilité
                 var cat_text = link.html() + ", " + link.parents('.category.with_children.loaded').first().children('.info').children('.categoryname').children('a').html();
@@ -27,18 +27,14 @@ $(document).ready(
             //On récupère l'id de la categorie pour le mettre dans le champ caché du formulaire
             var catid = link.attr('href').split('=')[1];
             $("#id_category").val(catid);
-            // //$('.collapsible-actions a')[0].click();
-            // $("#delete_category").show();
-            // $('html, body').animate({scrollTop: $('#selected_category').offset().top-100}, 'slow');
             return false;
         });
 
 
         $("#select_default_category").click(function(e) {
             e.preventDefault();
-            $(".category_selected").each(function(){
-                // $(this).click();
-                $(this).removeClass('category_selected');
+            $(".bold").each(function(){
+                $(this).removeClass('bold');
             });
             var default_name = $(this).attr('data-default-name');
             $("#id_category").val($(this).attr('data-default-id'));

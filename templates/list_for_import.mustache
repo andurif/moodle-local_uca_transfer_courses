@@ -1,40 +1,38 @@
+<div class="col-12">
 
-<div class="row col-xs-12">
-
-    <div>
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="navigation">
-                <a class="nav-link {{^active_histo}}active{{/active_histo}}" href="#courses" role="tab" data-toggle="tab" id="tab_courses">{{#str}}transfer_request, local_uca_transfer_courses{{/str}}</a>
-            </li>
-            <li class="nav-item" role="navigation">
-                <a class="nav-link {{#active_histo}}active{{/active_histo}}" href="#histo" role="tab" data-toggle="tab" id="tab_histo">{{#str}}transfer_histo, local_uca_transfer_courses{{/str}}</a>
-            </li>
-        </ul>
-    </div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="navigation">
+            <a class="nav-link {{^active_histo}}active{{/active_histo}}" href="#courses" role="tab" data-toggle="tab" id="tab_courses">{{#str}}transfer_request, local_uca_transfer_courses{{/str}}</a>
+        </li>
+        <li class="nav-item" role="navigation">
+            <a class="nav-link {{#active_histo}}active{{/active_histo}}" href="#histo" role="tab" data-toggle="tab" id="tab_histo">{{#str}}transfer_histo, local_uca_transfer_courses{{/str}}</a>
+        </li>
+    </ul>
 
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane {{^active_histo}}active{{/active_histo}}" id="courses">
-            <input type="hidden" value="{{ json_courses }}" id="json_courses" data-transferred-courses="{{{transferred}}}">
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-primary float-right" id="start_transfer">{{#str}}transfer, local_uca_transfer_courses{{/str}}</button>
+                    <fieldset>
+                        <legend>{{#str}}transfer_list, local_uca_transfer_courses{{/str}}</legend>
+                            <input type="hidden" value="{{ json_courses }}" id="json_courses" data-transferred-courses="{{{transferred}}}">
+                            <div id="jstree_courses" class="col-11 jstree" rel="json_courses"></div>
+                    </fieldset>
+                </div>
+                <div class="col">
+                    <fieldset>
+                        <legend>{{#str}}to_transfer, local_uca_transfer_courses{{/str}}</legend>
+                        <div id="requests">
 
-            <div class="col-xs-6">
-                <fieldset>
-                    <legend>{{#str}}transfer_list, local_uca_transfer_courses{{/str}}</legend>
-                    <button class="btn btn-primary pull-right" id="start_transfer">{{#str}}transfer, local_uca_transfer_courses{{/str}}</button>
-                    <div id="jstree_courses" class="col-xs-11 jstree" rel="json_courses"></div>
-                </fieldset>
-            </div>
-            <div class="col-xs-6">
-                <fieldset>
-                    <legend>{{#str}}to_transfer, local_uca_transfer_courses{{/str}}</legend>
-                    <div id="requests">
-
-                    </div>
-                    <form action="" method="post" id="courses_form">
-                        <input type="hidden" name="json_requests" />
-                        <input type="submit" id="submit_requests" name="submit_requests" class="btn btn-primary col-xs-6" value="{{#str}}savechanges, moodle{{/str}}" />
-                        <input type="reset" id="reset_requests" name="reset_requests" class="btn btn-default col-xs-6" value="{{#str}}cancel, moodle{{/str}}" />
-                    </form>
-                </fieldset>
+                        </div>
+                        <form action="" method="post" id="courses_form">
+                            <input type="hidden" name="json_requests" />
+                            <input type="submit" id="submit_requests" name="submit_requests" class="btn btn-primary col" value="{{#str}}savechanges, moodle{{/str}}" />
+                            <input type="reset" id="reset_requests" name="reset_requests" class="btn btn-default col" value="{{#str}}cancel, moodle{{/str}}" />
+                        </form>
+                    </fieldset>
+                </div>
             </div>
         </div>
 
@@ -49,38 +47,38 @@
             {{#requests}}
                 <table class="table table-striped">
                     <thead class="thead-inverse">
-                        <tr>
-                            <th>{{#str}}request_date, local_uca_transfer_courses{{/str}}</th>
-                            <th>{{#str}}course, moodle{{/str}}</th>
-                            <th>Catégorie de destination</th>
-                            <th>{{#str}}status, moodle{{/str}}</th>
-                            <th></th>
-                        </tr>
+                    <tr>
+                        <th>{{#str}}request_date, local_uca_transfer_courses{{/str}}</th>
+                        <th>{{#str}}course, moodle{{/str}}</th>
+                        <th>Catégorie de destination</th>
+                        <th>{{#str}}status, moodle{{/str}}</th>
+                        <th></th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {{#courses}}
-                            <tr {{#transfer_end}}class="table-success"{{/transfer_end}}>
-                                    <td>{{request_date}}</td>
-                                    <td>{{course_name}}</td>
-                                    <td>{{target_category_name}}</td>
-                                    <td>
-                                        {{#transfer_end}}
-                                            {{#str}}transfer_complete, local_uca_transfer_courses{{/str}} {{ transfer_end }}
-                                            <td></td>
-                                        {{/transfer_end}}
-                                        {{^transfer_end}}
-                                            {{#transfer_start}}
-                                                {{#str}}transfer_in_progress, local_uca_transfer_courses{{/str}} {{ transfer_start }}
-                                                <td></td>
-                                            {{/transfer_start}}
-                                            {{^transfer_start}}
-                                                {{#str}}pending, mod_lti{{/str}}
-                                                <td><a href="#" class="btn btn-default cancel_request" data-request-id="{{id}}">{{#str}}cancel_transfer, local_uca_transfer_courses{{/str}}</a>
-                                            {{/transfer_start}}
-                                        {{/transfer_end}}
-                                    </td>
-                                </tr>
-                        {{/courses}}
+                    {{#courses}}
+                        <tr {{#transfer_end}}class="table-success"{{/transfer_end}}>
+                            <td>{{request_date}}</td>
+                            <td>{{course_name}}</td>
+                            <td>{{target_category_name}}</td>
+                        <td>
+                            {{#transfer_end}}
+                                {{#str}}transfer_complete, local_uca_transfer_courses{{/str}} {{ transfer_end }}
+                                <td></td>
+                            {{/transfer_end}}
+                            {{^transfer_end}}
+                                {{#transfer_start}}
+                                    {{#str}}transfer_in_progress, local_uca_transfer_courses{{/str}} {{ transfer_start }}
+                                    <td></td>
+                                {{/transfer_start}}
+                                {{^transfer_start}}
+                                    {{#str}}pending, mod_lti{{/str}}
+                                <td><a href="#" class="btn btn-default cancel_request" data-request-id="{{id}}">{{#str}}cancel_transfer, local_uca_transfer_courses{{/str}}</a>
+                                {{/transfer_start}}
+                            {{/transfer_end}}
+                        </td>
+                        </tr>
+                    {{/courses}}
                     </tbody>
                 </table>
             {{/requests}}
@@ -90,7 +88,7 @@
 </div>
 
 <!-- MODAL -->
-<div class="modal fade" id="tree_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal" id="tree_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -100,7 +98,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                Catégorie où déplacer le cours: <span id="selected_category" style="font-weight: bold"></span>
+                {{#str}}target, local_uca_transfer_courses{{/str}}<span id="selected_category" style="font-weight: bold"></span>
                 {{#tree}}{{{ tree }}}{{/tree}}
             </div>
             <div class="modal-footer">
@@ -114,9 +112,9 @@
 <!-- TEMPLATE DEMANDE TRANSFERT -->
 <div class="selected_cours_template">
     <div class="row transfer_request" data-course-id="">
-        <div class="col-xs-10 request_text"></div>
-        <div class="col-xs-2">
-            <i class="material-icons pull-right btn_remove_request" title="{{#str}}delete, moodle{{/str}}" style="cursor: pointer;">delete</i>
+        <div class="col-10 request_text"></div>
+        <div class="col-2">
+            <i class="material-icons float-right btn_remove_request" title="{{#str}}delete, moodle{{/str}}" style="cursor: pointer;">delete</i>
         </div>
     </div>
 </div>
@@ -189,10 +187,10 @@
             $('.course_category_tree').on('click', '.content a',function(e){
                 var link = $(this);
                 link.parent('.info').click();
-                $(".category_selected").each(function(){
-                    $(this).removeClass('category_selected');
+                $(".bold").each(function(){
+                    $(this).removeClass('bold');
                 });
-                link.addClass('category_selected');
+                link.addClass('bold');
                 if(link.html().indexOf(' année') >= 0 || link.html().indexOf('Année unique') >= 0) {
                     //Si on a cliqué au niveau d'une année, on affichera le nom du diplôme à la suite pour plus de lisibilité
                     cat_text = link.html() + ", " + link.parents('.category.with_children.loaded').first().children('.info').children('.categoryname').children('a').html();
@@ -251,6 +249,7 @@
             //Action permettant de supprimer la demande selectionnée
             $('#requests').on('click','.btn_remove_request',function()
             {
+                console.log(requests);
                 var cours = $(this).parents('.transfer_request').attr('data-course-id');
                 //On supprime le cours du tableau des demandes
                 $.each(requests, function(index) {
@@ -265,7 +264,8 @@
                     $("#submit_requests").hide();
                     $("#reset_requests").hide();
                 }
-
+                console.log(requests);
+                $("input[name='json_requests']").val(JSON.stringify(requests));
             });
 
             //On annule les demande de transfert <=> refresh de la page ?

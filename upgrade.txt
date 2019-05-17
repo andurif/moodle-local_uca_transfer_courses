@@ -1,0 +1,10 @@
+This file describes changes for the plugin.
+
+=== v3.6-r1 ===
+
+* Start of implementation of new privacy API to become GDPR compliant.
+* Use of bootstrap 4
+
+=== v3.3-r1 ===
+
+* First version of the plugin.

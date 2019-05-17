@@ -20,13 +20,10 @@
  * Custom mustache helper which permits to use the moodle_url() in mustache templates.
  *
  * @package    local_uca_transfer_courses
- * @author     Université Clermont Auvergne, Pierre Raynaud, Anthony Durif
+ * @author     Université Clermont Auvergne - Pierre Raynaud, Anthony Durif
  * @copyright  2018 Université Clermont Auvergne
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-use renderer_base;
-use Mustache_LambdaHelper;
 
 /**
  * Custom UCA mustache helper.
@@ -34,12 +31,11 @@ use Mustache_LambdaHelper;
  * Custom mustache helper which permits to use the moodle_url() in mustache templates.
  *
  * @package    local_uca_transfer_courses
- * @author     Université Clermont Auvergne, Pierre Raynaud, Anthony Durif
  * @copyright  2018 Université Clermont Auvergne
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class uca_url_helper
-{
+class uca_url_helper {
+
     /** @var renderer_base $renderer A reference to the renderer in use */
     private $renderer;
 
@@ -47,7 +43,7 @@ class uca_url_helper
      * Save a reference to the renderer.
      * @param renderer_base $renderer
      */
-    public function __construct(renderer_base $renderer) {
+    public function __construct(\renderer_base $renderer) {
         $this->renderer = $renderer;
     }
 
@@ -57,8 +53,7 @@ class uca_url_helper
      * @param Mustache_LambdaHelper $helper the mustache helper.
      * @return \moodle_url the generated moodle url.
      */
-    public function uca_url($string, Mustache_LambdaHelper $helper) {
-
+    public function uca_url($string, \Mustache_LambdaHelper $helper) {
         $string = $helper->render($string);
 
         $key = strtok($string, ",");

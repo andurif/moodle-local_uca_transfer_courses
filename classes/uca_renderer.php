@@ -21,7 +21,7 @@
  * Extends renderer_base class.
  *
  * @package    local_uca_transfer_courses
- * @author     Université Clermont Auvergne, Pierre Raynaud, Anthony Durif
+ * @author     Université Clermont Auvergne - Pierre Raynaud, Anthony Durif
  * @copyright  2018 Université Clermont Auvergne
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,12 +35,11 @@ use Mustache_Engine;
  * Extends renderer_base class.
  *
  * @package    local_uca_transfer_courses
- * @author     Université Clermont Auvergne, Pierre Raynaud, Anthony Durif
  * @copyright  2018 Université Clermont Auvergne
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class uca_renderer extends \renderer_base
-{
+class uca_renderer extends \renderer_base {
+
     /** @var Mustache_Engine custom instance of the mustache class */
     protected $uca_mustache;
 
@@ -49,8 +48,7 @@ class uca_renderer extends \renderer_base
      * @param moodle_page $page the page we are doing output for.
      * @param string $target one of rendering target constants
      */
-    public function __construct(moodle_page $page, $target = null)
-    {
+    public function __construct(moodle_page $page, $target = null) {
         parent::__construct($page, $target);
     }
 
