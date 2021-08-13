@@ -35,16 +35,16 @@ require_once($CFG->dirroot.'/backup/controller/backup_controller.class.php');
 $action = is_null($_POST['action']) ? 'export' : $_POST['action'];
 $courseid = $_POST['course'];
 $folder = $CFG->dataroot . '/clfd/transfert/';
-//Il faut simuler que l'admin fasse l'action => si besoin modifier l'affectation de $user->id = 2 par l'id d'un utilisateur étant administrateur du moodle
+// Il faut simuler que l'admin fasse l'action => si besoin modifier l'affectation de $user->id = 2 par l'id d'un utilisateur étant administrateur du moodle.
 
-if($action == 'export') {
+if ($action == 'export') {
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     $USER->id = 2;
 	
     try {
         $reponse = new stdClass();
         $config_backup = get_config('backup');
-        //Modification des config de bases de la sauvegarde automatique
+        // Modification des config de bases de la sauvegarde automatique.
         set_config('backup_shortname', 0, 'backup');
         set_config('backup_auto_destination', $folder, 'backup');
         set_config('backup_auto_users', 0, 'backup');
@@ -55,12 +55,12 @@ if($action == 'export') {
         set_config('backup_auto_histories', 0, 'backup');
         set_config('backup_auto_groups', 0, 'backup');
 
-        //Création de l'archive
+        // Création de l'archive.
         $helper = backup_cron_automated_helper::launch_automated_backup($course, 0, $USER->id);
-        //Récupération du nom de l'archive
+        // Récupération du nom de l'archive.
         $fileName = backup_plan_dbops::get_default_backup_filename('moodle2', 'course', $course->id, get_config('backup_auto_users', 'backup'), 0, (get_config('backup_shortname', 'backup') == 0));
 
-        //Remettre les anciens paramètres pour la sauvegarde automatique
+        // Remettre les anciens paramètres pour la sauvegarde automatique.
         //    set_config('backup_shortname', $config_backup->backup_shortname, 'backup');
         set_config('backup_auto_destination', $config_backup->backup_auto_destination, 'backup');
 
@@ -78,6 +78,6 @@ if($action == 'export') {
     }
 }
 
-if($action == "delete") {
+if ($action == "delete") {
     unlink($folder . $_POST['archive_path']);
 }

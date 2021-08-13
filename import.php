@@ -53,7 +53,7 @@ $renderer = new uca_renderer($PAGE);
 $courserenderer = $PAGE->get_renderer('core', 'course');
 $tab = '';
 
-if(isset($_POST) && isset($_POST['submit_requests'])) {
+if (isset($_POST) && isset($_POST['submit_requests'])) {
     $requests = json_decode($_POST['json_requests']);
 
     foreach ($requests as $request) {
@@ -70,7 +70,6 @@ try {
     $response = $client->post(get_config('local_uca_transfer_courses', 'course_transfer_url'), ['form_params' => $options]);
     $json = $response->getBody()->getContents();
 } catch(Exception $e) {
-    dump($e);
     $json = null;
 }
 

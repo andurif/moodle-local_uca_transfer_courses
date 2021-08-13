@@ -34,7 +34,7 @@ function xmldb_local_uca_transfer_courses_install() {
 
     $dbman = $DB->get_manager();
 
-    //Création de la table permettant de stocker les demandes de transfert de cours depuis l'ancienne version de coursenligne.
+    // Création de la table permettant de stocker les demandes de transfert de cours depuis l'ancienne version de coursenligne.
     $table = new xmldb_table('course_transfer_request');
     $table->add_field('id', XMLDB_TYPE_INTEGER, 11, null, true, XMLDB_SEQUENCE, null);
     $table->add_field('user_id', XMLDB_TYPE_INTEGER, 11, null, false, null, null);

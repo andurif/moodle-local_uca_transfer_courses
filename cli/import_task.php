@@ -37,16 +37,16 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 $client = new GuzzleHttp\Client();
 $requests = $DB->get_records('course_transfer_request', array('transfer_start' => null), '', '*', 0, 1);
 
-foreach($requests as $request) {
+foreach ($requests as $request) {
     $options = array('course' => $request->course_id);
     $request->transfer_start = date('Y-m-d H:i:s');
 //    $DB->update_record('course_transfer_request', $request);
     $response = $client->post(get_config('local_uca_transfer_courses', 'course_export_url'), ['form_params' => $options]);
     $datas = json_decode($response->getBody()->getContents());
     $config = get_config('backup');
-    //On copie le fichier entre les deux moodledatas
-    //On suppose que l'on peut communiquer simplement entre les dossiers moodledatas s'ils sont sur le même serveur ou avec un montage nfs
-    //Si les deux dossiers sont distants => modifier la commande en faisant par exemple un scp.
+    // On copie le fichier entre les deux moodledatas.
+    // On suppose que l'on peut communiquer simplement entre les dossiers moodledatas s'ils sont sur le même serveur ou avec un montage nfs.
+    // Si les deux dossiers sont distants => modifier la commande en faisant par exemple un scp..
     shell_exec('cp ' . get_config('local_uca_transfer_courses', 'transfer_archives_folder') . $datas->archive_path . ' ' . $config->backup_auto_destination);
 
     $filePath = $datas->archive_path . "_folder";
@@ -67,13 +67,13 @@ foreach($requests as $request) {
     $fb->extract_to_pathname($directory . $datas->archive_path, $directory_dest . $filePath);
     unlink($directory . $datas->archive_path);
 
-    //Il faut simuler que l'admin fasse l'action => si besoin modifier l'affectation de $user->id = 2 par l'id d'un utilisateur étant administrateur du moodle
-    if($user->id != null) {
+    // Il faut simuler que l'admin fasse l'action => si besoin modifier l'affectation de $user->id = 2 par l'id d'un utilisateur étant administrateur du moodle.
+    if ($user->id != null) {
         enrol_course_updated(true, $newCourse, $newCourse);
         $enrol_plugin = enrol_get_plugin('manual');
         $enrolid = $DB->get_record('enrol', array('enrol' => 'manual', 'courseid' => $courseid), '*', MUST_EXIST);
-        //On ajoute le rôle donné à la création (normalement gestionnaire) pour que l'utilisateur ayant transféré le cours puisse le gérer
-        //Si besoin modifier en mettant directement l'id du role voulu.
+        // On ajoute le rôle donné à la création (normalement gestionnaire) pour que l'utilisateur ayant transféré le cours puisse le gérer.
+        // Si besoin modifier en mettant directement l'id du role voulu.
         $enrol_plugin->enrol_user($enrolid, $user->id, $CFG->creatornewroleid);
         $user->id = 2;
     } else {

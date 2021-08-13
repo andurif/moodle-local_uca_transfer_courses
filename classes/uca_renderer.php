@@ -75,7 +75,8 @@ class uca_renderer extends \renderer_base {
 
             $safeconfig = $this->page->requires->get_config_for_javascript($this->page, $this);
 
-            $helpers = array('config' => $safeconfig,
+            $helpers = array(
+                'config'    => $safeconfig,
                 'str'       => array($stringhelper, 'str'),
                 'quote'     => array($quotehelper, 'quote'),
                 'js'        => array($jshelper, 'help'),

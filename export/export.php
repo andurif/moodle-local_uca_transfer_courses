@@ -34,7 +34,7 @@ $username = $_POST['username'];
 //$username = "admin";
 $user = $DB->get_record('user', array('username' => $username, 'suspended' => 0));
 $data = array();
-if($user) {
+if ($user) {
     $courses = getCourses($user);
 
     $categories = array();
@@ -67,15 +67,15 @@ if($user) {
 
         $parents = array_reverse($parents);
         $parents[] = $course->category;
-//
-//        // Gestion des catégories filles
+
+        // Gestion des catégories filles.
         for ($i=0 ; $i<count($parents)-1; $i++) {
             if (!in_array($parents[$i+1], $categories[$parents[$i]]->children)) {
                 $categories[$parents[$i]]->children[] = $parents[$i + 1];
             }
         }
 
-        // On détermine le haut de l'arbre
+        // On détermine le haut de l'arbre.
         $rootCat = (0 == count($parents)) ? $course->category : $parents[0];
 
         if (!in_array($rootCat,$root)) {
@@ -117,14 +117,14 @@ function getCourses($user) {
     $courses = enrol_get_users_courses($user->id, true, null, 'fullname ASC,sortorder ASC');
     $list = array();
 
-    foreach($courses as $key => $course) {
+    foreach ($courses as $key => $course) {
         $ctx = context_course::instance($course->id, true);
         $roles = get_user_roles($ctx,$user->id, true);
 
-        foreach($roles as $role) {
-            //on récupère les cours où l'utilisateur a des droits de gestion.
-            //Si besoin modifier le nom du rôle.
-            if($role->shortname == 'manager') {
+        foreach ($roles as $role) {
+            // On récupère les cours où l'utilisateur a des droits de gestion.
+            // Si besoin modifier le nom du rôle.
+            if ($role->shortname == 'manager') {
                 $list[] = $course;
                 break;
             }
@@ -160,7 +160,7 @@ function getCategorie($categorieId, $categories) {
  * @param $category la catégorie de cours.
  */
 function add_courses_in_tree($category) {
-    if(isset($category->courses)) {
+    if (isset($category->courses)) {
         foreach ($category->courses as $course) {
             $cc = new stdClass();
             $cc->text = $course->text;

@@ -32,7 +32,7 @@
 function course_categories_list($renderer, $category) {
     $chelper = new coursecat_helper();
 
-    // Prepare parameters for courses and categories lists in the tree
+    // Prepare parameters for courses and categories lists in the tree.
     $chelper->set_show_courses($renderer::COURSECAT_SHOW_COURSES_COUNT)
         ->set_attributes(array('class' => 'category-browse category-browse-'.$category))
         ->set_categories_display_options(array('visible' => true));
